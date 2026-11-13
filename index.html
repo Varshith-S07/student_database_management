@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Database Management System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== TOP NAVBAR ===== -->
+  <header class="navbar">
+    <button id="menuBtn" class="icon-btn menu-btn" aria-label="Open menu">&#9776;</button>
+    <div class="logo"><span class="logo-mark">SD</span> Student Database</div>
+    <input id="globalSearch" class="nav-search" type="search" placeholder="Search students and press Enter">
+    <div class="nav-right">
+      <button id="bellBtn" class="icon-btn" aria-label="Notifications">&#128276;<span class="dot"></span></button>
+      <div class="profile"><span class="avatar">AD</span><span class="profile-name">Admin</span></div>
+    </div>
+  </header>
+
+  <!-- ===== SIDEBAR ===== -->
+  <nav id="sidebar" class="sidebar">
+    <a href="#" data-view="dashboard" class="active">Dashboard</a>
+    <a href="#" data-view="students">All Students</a>
+    <a href="#" data-view="add">Add Student</a>
+    <a href="#" data-view="search">Search Students</a>
+    <a href="#" data-view="settings">Settings</a>
+    <a href="#" id="logoutBtn">Logout</a>
+  </nav>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="content">
+    <div id="message" class="message" role="status"></div>
+
+    <!-- Dashboard -->
+    <section id="view-dashboard" class="view">
+      <h1>Dashboard</h1>
+      <div class="cards">
+        <div class="card"><p>Total Students</p><h2 id="cardTotal">0</h2></div>
+        <div class="card"><p>Total Courses</p><h2 id="cardCourses">0</h2></div>
+        <div class="card"><p>Recently Added (7 days)</p><h2 id="cardRecent">0</h2></div>
+        <div class="card"><p>Active Students</p><h2 id="cardActive">0</h2></div>
+      </div>
+      <div class="panel">
+        <h3>Recently added students</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Course</th><th>Department</th><th>Year</th></tr></thead>
+            <tbody id="recentBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- All Students -->
+    <section id="view-students" class="view hidden">
+      <h1>All Students</h1>
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Course</th><th>Department</th><th>Year</th><th>Actions</th></tr></thead>
+            <tbody id="allBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add / Edit Student -->
+    <section id="view-add" class="view hidden">
+      <h1 id="formTitle">Add Student</h1>
+      <div class="panel">
+        <form id="studentForm" novalidate>
+          <div class="grid">
+            <label>Student ID
+              <input id="studentId" type="text" readonly>
+            </label>
+            <label>Full Name *
+              <input id="fullName" type="text" required>
+              <small class="error" id="err-fullName"></small>
+            </label>
+            <label>Email Address *
+              <input id="email" type="email" required>
+              <small class="error" id="err-email"></small>
+            </label>
+            <label>Phone Number *
+              <input id="phone" type="tel" required>
+              <small class="error" id="err-phone"></small>
+            </label>
+            <label>Gender *
+              <select id="gender" required>
+                <option value="">Select</option><option>Male</option><option>Female</option><option>Other</option>
+              </select>
+              <small class="error" id="err-gender"></small>
+            </label>
+            <label>Date of Birth *
+              <input id="dob" type="date" required>
+              <small class="error" id="err-dob"></small>
+            </label>
+            <label>Course *
+              <select id="course" required></select>
+              <small class="error" id="err-course"></small>
+            </label>
+            <label>Department *
+              <select id="department" required></select>
+              <small class="error" id="err-department"></small>
+            </label>
+            <label>Year of Study *
+              <select id="year" required>
+                <option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option>
+              </select>
+              <small class="error" id="err-year"></small>
+            </label>
+            <label class="full">Address *
+              <textarea id="address" rows="3" required></textarea>
+              <small class="error" id="err-address"></small>
+            </label>
+          </div>
+          <div class="btn-row">
+            <button type="submit" id="submitBtn" class="btn primary">Add Student</button>
+            <button type="button" id="resetBtn" class="btn">Reset Form</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Search Students -->
+    <section id="view-search" class="view hidden">
+      <h1>Search Students</h1>
+      <div class="panel">
+        <div class="filters">
+          <input id="searchName" type="search" placeholder="Search by name">
+          <input id="searchId" type="search" placeholder="Search by student ID">
+          <select id="filterCourse"></select>
+          <select id="filterDept"></select>
+          <button id="clearFilters" class="btn">Clear</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Course</th><th>Department</th><th>Year</th><th>Actions</th></tr></thead>
+            <tbody id="searchBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings -->
+    <section id="view-settings" class="view hidden">
+      <h1>Settings</h1>
+      <div class="panel">
+        <h3>Backend connection</h3>
+        <p>Current mode: <strong id="modeLabel"></strong></p>
+        <p class="hint">To connect the Flask API on EC2, set <code>API_URL</code> at the top of <code>script.js</code>.</p>
+        <h3>Demo data</h3>
+        <p class="hint">Restores the 5 sample students (localStorage mode only).</p>
+        <button id="resetDataBtn" class="btn">Reset demo data</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== VIEW DETAILS DIALOG ===== -->
+  <dialog id="viewDialog">
+    <h3>Student Details</h3>
+    <dl id="viewBody"></dl>
+    <div class="btn-row"><button id="closeView" class="btn primary">Close</button></div>
+  </dialog>
+
+  <!-- ===== DELETE CONFIRM DIALOG ===== -->
+  <dialog id="deleteDialog">
+    <h3>Delete student?</h3>
+    <p id="deleteText"></p>
+    <div class="btn-row">
+      <button id="confirmDelete" class="btn danger">Delete</button>
+      <button id="cancelDelete" class="btn">Cancel</button>
+    </div>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
